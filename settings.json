@@ -1,4 +1,5 @@
 {
+        "instances":4,
 	"port":9080,
 	"contextRoot": "/rest/api",
 		

@@ -17,6 +17,7 @@
 var express = require('express')
   , http = require('http')
   , fs = require('fs')
+  , cluster = require('cluster')
   , log4js = require('log4js');
 var settings = JSON.parse(fs.readFileSync('settings.json', 'utf8'));
 
@@ -125,6 +126,11 @@ app.use(settings.contextRoot, router);
 var initialized = false;
 var serverStarted = false;
 
+if (cluster.isMaster) {
+    for (var i = 0; i < settings.instances; i++) {
+        cluster.fork();
+    }
+} else {
 if (authService && authService.initialize)
 {
 	authService.initialize(function(){
@@ -133,7 +139,7 @@ if (authService && authService.initialize)
 }
 else
 	initDB();
-
+}
 
 function checkStatus(req, res){
 	res.sendStatus(200);
